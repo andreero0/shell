@@ -10,7 +10,41 @@ set -x
 # Then it unzips the raw data provided by the client.
 
 mkdir analysis output
+
+# Create README.md with project information using a here document
 touch README.md
+cat << 'EOF' > README.md
+# DSI Consulting Data Analysis Project
+
+## Project Overview
+This project is set up to analyze client data using a standardized directory structure and data processing workflow.
+
+## Directory Structure
+- `analysis/` - Contains analysis scripts and notebooks
+  - `main.py` - Main analysis script
+- `data/` - Data directory
+  - `raw/` - Original unprocessed client data
+  - `processed/` - Processed data files
+    - `server_logs/` - Processed server log files
+    - `user_logs/` - Processed user log files
+    - `event_logs/` - Processed event log files
+- `output/` - Output files and results
+
+## Data Processing
+The project includes automated processing of:
+- Server logs
+- User logs (with sensitive IP data removed)
+- Event logs
+
+## Getting Started
+1. Run the setup script to create the directory structure
+2. Raw data will be automatically downloaded and organized
+3. Check `data/inventory.txt` for a list of processed data files
+
+## Privacy Notice
+All files containing IP addresses are automatically removed during processing to ensure user privacy.
+EOF
+
 touch analysis/main.py
 
 # download client data
@@ -21,22 +55,25 @@ unzip rawdata.zip
 # Complete assignment here
 
 # 1. Create a directory named data
-
+mkdir data
 # 2. Move the ./rawdata directory to ./data/raw
-
+mv rawdata data/raw
 # 3. List the contents of the ./data/raw directory
-
+ls data/raw
 # 4. In ./data/processed, create the following directories: server_logs, user_logs, and event_logs
-
+mkdir -p data/processed/server_logs
+mkdir -p data/processed/user_logs
+mkdir -p data/processed/event_logs
 # 5. Copy all server log files (files with "server" in the name AND a .log extension) from ./data/raw to ./data/processed/server_logs
-
+cp data/raw/server*.log data/processed/server_logs/
 # 6. Repeat the above step for user logs and event logs
-
+cp data/raw/user*.log data/processed/user_logs/
+cp data/raw/event*.log data/processed/event_logs/
 # 7. For user privacy, remove all files containing IP addresses (files with "ipaddr" in the filename) from ./data/raw and ./data/processed/user_logs
-
+find data/raw -type f -name "*ipaddr*" -delete
+find data/processed/user_logs -type f -name "*ipaddr*" -delete
 # 8. Create a file named ./data/inventory.txt that lists all the files in the subfolders of ./data/processed
-
-
+find data/processed -type f -name "*.log" > data/inventory.txt
 
 ###########################################
 
